@@ -100,7 +100,9 @@ class DigitalOceanConfig implements PlainArrayInterface, AdminArrayInterface
             'id' => $this->getId(),
             'apiKey' => $this->getApiKey(),
             'remark' => $this->getRemark(),
-        ] + $this->retrieveTimestampArray();
+            'createTime' => $this->getCreateTime()?->format('Y-m-d H:i:s'),
+            'updateTime' => $this->getUpdateTime()?->format('Y-m-d H:i:s'),
+        ];
     }
 
     public function toAdminArray(): array

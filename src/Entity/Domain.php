@@ -117,7 +117,9 @@ class Domain implements PlainArrayInterface, AdminArrayInterface
             'name' => $this->getName(),
             'ttl' => $this->getTtl(),
             'zoneFile' => $this->getZoneFile(),
-        ] + $this->retrieveTimestampArray();
+            'createTime' => $this->getCreateTime()?->format('Y-m-d H:i:s'),
+            'updateTime' => $this->getUpdateTime()?->format('Y-m-d H:i:s'),
+        ];
     }
 
     public function toAdminArray(): array

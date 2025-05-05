@@ -206,7 +206,9 @@ class Account implements PlainArrayInterface, AdminArrayInterface
             'floatingIpLimit' => $this->getFloatingIpLimit(),
             'reservedIpLimit' => $this->getReservedIpLimit(),
             'volumeLimit' => $this->getVolumeLimit(),
-        ] + $this->retrieveTimestampArray();
+            'createTime' => $this->getCreateTime()?->format('Y-m-d H:i:s'),
+            'updateTime' => $this->getUpdateTime()?->format('Y-m-d H:i:s'),
+        ];
     }
 
     public function toAdminArray(): array

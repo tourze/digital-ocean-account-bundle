@@ -26,11 +26,6 @@ class DigitalOceanConfig implements PlainArrayInterface, AdminArrayInterface
     #[ORM\Column(type: Types::INTEGER, options: ['comment' => 'ID'])]
     private ?int $id = 0;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
     #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => 'API Key'])]
     private string $apiKey;
 
@@ -52,24 +47,9 @@ class DigitalOceanConfig implements PlainArrayInterface, AdminArrayInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true, options: ['comment' => '更新时间'])]
     private ?\DateTimeInterface $updateTime = null;
 
-    public function setCreateTime(?\DateTimeInterface $createdAt): void
+    public function getId(): ?int
     {
-        $this->createTime = $createdAt;
-    }
-
-    public function getCreateTime(): ?\DateTimeInterface
-    {
-        return $this->createTime;
-    }
-
-    public function setUpdateTime(?\DateTimeInterface $updateTime): void
-    {
-        $this->updateTime = $updateTime;
-    }
-
-    public function getUpdateTime(): ?\DateTimeInterface
-    {
-        return $this->updateTime;
+        return $this->id;
     }
 
     public function getApiKey(): string
@@ -92,6 +72,26 @@ class DigitalOceanConfig implements PlainArrayInterface, AdminArrayInterface
     {
         $this->remark = $remark;
         return $this;
+    }
+
+    public function setCreateTime(?\DateTimeInterface $createdAt): void
+    {
+        $this->createTime = $createdAt;
+    }
+
+    public function getCreateTime(): ?\DateTimeInterface
+    {
+        return $this->createTime;
+    }
+
+    public function setUpdateTime(?\DateTimeInterface $updateTime): void
+    {
+        $this->updateTime = $updateTime;
+    }
+
+    public function getUpdateTime(): ?\DateTimeInterface
+    {
+        return $this->updateTime;
     }
 
     public function toPlainArray(): array

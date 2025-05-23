@@ -76,29 +76,6 @@ class YourController
 }
 ```
 
-#### Managing SSH Keys
-
-```php
-<?php
-
-use DigitalOceanAccountBundle\Service\SSHKeyService;
-
-class YourController
-{
-    public function manageSshKeys(SSHKeyService $sshKeyService)
-    {
-        // List all SSH keys
-        $keys = $sshKeyService->listKeys();
-        
-        // Create a new SSH key
-        $newKey = $sshKeyService->createKey('my-key-name', 'ssh-rsa AAAA...');
-        
-        // Delete an SSH key
-        $sshKeyService->deleteKey($keyId);
-    }
-}
-```
-
 ## API Documentation
 
 The bundle provides several services for interacting with the DigitalOcean API:

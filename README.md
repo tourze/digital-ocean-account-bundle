@@ -37,21 +37,6 @@ return [
 
 ## Quick Start
 
-### Configuration
-
-Create a configuration file at `config/packages/digital_ocean_account.yaml`:
-
-```yaml
-digital_ocean_account:
-    api_key: '%env(DIGITAL_OCEAN_API_KEY)%'
-```
-
-Set your DigitalOcean API key in your `.env` file:
-
-```
-DIGITAL_OCEAN_API_KEY=your_digital_ocean_api_key
-```
-
 ### Usage Examples
 
 #### Accessing Account Information

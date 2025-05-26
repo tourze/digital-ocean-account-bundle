@@ -37,21 +37,6 @@ return [
 
 ## 快速开始
 
-### 配置
-
-在`config/packages/digital_ocean_account.yaml`创建配置文件：
-
-```yaml
-digital_ocean_account:
-    api_key: '%env(DIGITAL_OCEAN_API_KEY)%'
-```
-
-在`.env`文件中设置DigitalOcean API密钥：
-
-```
-DIGITAL_OCEAN_API_KEY=你的_digital_ocean_api_密钥
-```
-
 ### 使用示例
 
 #### 访问账户信息

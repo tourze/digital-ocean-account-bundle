@@ -10,7 +10,7 @@ class AccountTest extends TestCase
     public function testConstruction_withDefaultValues(): void
     {
         $account = new Account();
-        
+
         $this->assertEquals(0, $account->getId());
         $this->assertNull($account->getCreateTime());
         $this->assertNull($account->getUpdateTime());
@@ -20,11 +20,11 @@ class AccountTest extends TestCase
         $this->assertNull($account->getReservedIpLimit());
         $this->assertNull($account->getVolumeLimit());
     }
-    
+
     public function testGettersAndSetters_withValidValues(): void
     {
         $account = new Account();
-        
+
         $email = 'test@example.com';
         $uuid = '12345678-1234-1234-1234-123456789012';
         $status = 'active';
@@ -36,7 +36,7 @@ class AccountTest extends TestCase
         $volumeLimit = '20';
         $createTime = new \DateTime('2023-01-01');
         $updateTime = new \DateTime('2023-01-02');
-        
+
         $account->setEmail($email)
             ->setUuid($uuid)
             ->setStatus($status)
@@ -46,10 +46,10 @@ class AccountTest extends TestCase
             ->setFloatingIpLimit($floatingIpLimit)
             ->setReservedIpLimit($reservedIpLimit)
             ->setVolumeLimit($volumeLimit);
-        
+
         $account->setCreateTime($createTime);
         $account->setUpdateTime($updateTime);
-        
+
         $this->assertEquals($email, $account->getEmail());
         $this->assertEquals($uuid, $account->getUuid());
         $this->assertEquals($status, $account->getStatus());
@@ -62,23 +62,23 @@ class AccountTest extends TestCase
         $this->assertEquals($createTime, $account->getCreateTime());
         $this->assertEquals($updateTime, $account->getUpdateTime());
     }
-    
+
     public function testToPlainArray_returnsCorrectFormat(): void
     {
         $account = new Account();
-        
+
         $email = 'test@example.com';
         $uuid = '12345678-1234-1234-1234-123456789012';
         $status = 'active';
         $emailVerified = true;
-        
+
         $account->setEmail($email)
             ->setUuid($uuid)
             ->setStatus($status)
             ->setEmailVerified($emailVerified);
-        
+
         $plainArray = $account->toPlainArray();
-        
+
         $this->assertIsArray($plainArray);
         $this->assertEquals(0, $plainArray['id']);
         $this->assertEquals($email, $plainArray['email']);
@@ -86,23 +86,23 @@ class AccountTest extends TestCase
         $this->assertEquals($status, $plainArray['status']);
         $this->assertEquals($emailVerified, $plainArray['emailVerified']);
     }
-    
+
     public function testToAdminArray_returnsCorrectFormat(): void
     {
         $account = new Account();
-        
+
         $email = 'test@example.com';
         $uuid = '12345678-1234-1234-1234-123456789012';
         $status = 'active';
         $emailVerified = true;
-        
+
         $account->setEmail($email)
             ->setUuid($uuid)
             ->setStatus($status)
             ->setEmailVerified($emailVerified);
-        
+
         $adminArray = $account->toAdminArray();
-        
+
         $this->assertIsArray($adminArray);
         $this->assertEquals(0, $adminArray['id']);
         $this->assertEquals($email, $adminArray['email']);
@@ -110,4 +110,4 @@ class AccountTest extends TestCase
         $this->assertEquals($status, $adminArray['status']);
         $this->assertEquals($emailVerified, $adminArray['emailVerified']);
     }
-} 
+}

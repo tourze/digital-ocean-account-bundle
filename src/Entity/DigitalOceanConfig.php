@@ -12,7 +12,7 @@ use Tourze\EasyAdmin\Attribute\Column\ListColumn;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'ims_digital_ocean_config', options: ['comment' => 'DigitalOcean配置'])]
-class DigitalOceanConfig implements PlainArrayInterface, AdminArrayInterface
+class DigitalOceanConfig implements PlainArrayInterface, AdminArrayInterface, \Stringable
 {
     use TimestampableAware;
     #[ListColumn(order: -1)]
@@ -31,6 +31,11 @@ class DigitalOceanConfig implements PlainArrayInterface, AdminArrayInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function __toString(): string
+    {
+        return $this->remark ?? 'DigitalOcean配置#' . $this->id;
     }
 
     public function getApiKey(): string
@@ -53,7 +58,9 @@ class DigitalOceanConfig implements PlainArrayInterface, AdminArrayInterface
     {
         $this->remark = $remark;
         return $this;
-    }public function toPlainArray(): array
+    }
+
+    public function toPlainArray(): array
     {
         return [
             'id' => $this->getId(),

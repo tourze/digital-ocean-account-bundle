@@ -13,7 +13,7 @@ use Tourze\EasyAdmin\Attribute\Column\ListColumn;
 
 #[ORM\Entity(repositoryClass: AccountRepository::class)]
 #[ORM\Table(name: 'ims_digital_ocean_account', options: ['comment' => 'DigitalOcean账号信息'])]
-class Account implements PlainArrayInterface, AdminArrayInterface
+class Account implements PlainArrayInterface, AdminArrayInterface, \Stringable
 {
     #[ListColumn(order: -1)]
     #[ExportColumn]
@@ -25,6 +25,11 @@ class Account implements PlainArrayInterface, AdminArrayInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function __toString(): string
+    {
+        return $this->email;
     }
 
     #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '邮箱'])]

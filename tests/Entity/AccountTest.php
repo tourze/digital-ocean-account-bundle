@@ -34,8 +34,8 @@ class AccountTest extends TestCase
         $floatingIpLimit = '5';
         $reservedIpLimit = '3';
         $volumeLimit = '20';
-        $createTime = new \DateTime('2023-01-01');
-        $updateTime = new \DateTime('2023-01-02');
+        $createTime = new \DateTimeImmutable('2023-01-01');
+        $updateTime = new \DateTimeImmutable('2023-01-02');
 
         $account->setEmail($email)
             ->setUuid($uuid)
@@ -78,8 +78,6 @@ class AccountTest extends TestCase
             ->setEmailVerified($emailVerified);
 
         $plainArray = $account->toPlainArray();
-
-        $this->assertIsArray($plainArray);
         $this->assertEquals(0, $plainArray['id']);
         $this->assertEquals($email, $plainArray['email']);
         $this->assertEquals($uuid, $plainArray['uuid']);
@@ -102,8 +100,6 @@ class AccountTest extends TestCase
             ->setEmailVerified($emailVerified);
 
         $adminArray = $account->toAdminArray();
-
-        $this->assertIsArray($adminArray);
         $this->assertEquals(0, $adminArray['id']);
         $this->assertEquals($email, $adminArray['email']);
         $this->assertEquals($uuid, $adminArray['uuid']);

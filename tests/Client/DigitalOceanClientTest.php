@@ -6,23 +6,20 @@ use DigitalOceanAccountBundle\Client\DigitalOceanClient;
 use DigitalOceanAccountBundle\Request\DigitalOceanRequest;
 use HttpClientBundle\Request\RequestInterface;
 use PHPUnit\Framework\TestCase;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class DigitalOceanClientTest extends TestCase
 {
     public function testGetBaseUrl_returnsCorrectUrl(): void
     {
-        $httpClient = $this->createMock(HttpClientInterface::class);
-        $client = new DigitalOceanClient($httpClient);
+        $client = new DigitalOceanClient();
 
         $this->assertEquals('https://api.digitalocean.com/v2', $client->getBaseUrl());
     }
 
     public function testGetRequestUrl_returnsCorrectUrl(): void
     {
-        $httpClient = $this->createMock(HttpClientInterface::class);
-        $client = new DigitalOceanClient($httpClient);
+        $client = new DigitalOceanClient();
 
         $request = $this->createMock(RequestInterface::class);
         $request->expects($this->once())
@@ -41,8 +38,7 @@ class DigitalOceanClientTest extends TestCase
 
     public function testGetRequestMethod_returnsMethodFromRequest(): void
     {
-        $httpClient = $this->createMock(HttpClientInterface::class);
-        $client = new DigitalOceanClient($httpClient);
+        $client = new DigitalOceanClient();
 
         $request = $this->createMock(RequestInterface::class);
         $request->expects($this->once())
@@ -61,8 +57,7 @@ class DigitalOceanClientTest extends TestCase
 
     public function testGetRequestOptions_withApiKey_addsAuthorizationHeader(): void
     {
-        $httpClient = $this->createMock(HttpClientInterface::class);
-        $client = new DigitalOceanClient($httpClient);
+        $client = new DigitalOceanClient();
 
         $apiKey = 'test-api-key-12345';
         $request = $this->createMock(DigitalOceanRequest::class);
@@ -81,8 +76,6 @@ class DigitalOceanClientTest extends TestCase
         $method->setAccessible(true);
 
         $options = $method->invoke($client, $request);
-
-        $this->assertIsArray($options);
         $this->assertArrayHasKey('headers', $options);
         $this->assertEquals('Bearer ' . $apiKey, $options['headers']['Authorization']);
         $this->assertEquals('application/json', $options['headers']['Content-Type']);
@@ -90,8 +83,7 @@ class DigitalOceanClientTest extends TestCase
 
     public function testGetRequestOptions_withoutApiKey_throwsException(): void
     {
-        $httpClient = $this->createMock(HttpClientInterface::class);
-        $client = new DigitalOceanClient($httpClient);
+        $client = new DigitalOceanClient();
 
         $request = $this->createMock(DigitalOceanRequest::class);
 
@@ -116,8 +108,7 @@ class DigitalOceanClientTest extends TestCase
 
     public function testFormatResponse_parsesJsonCorrectly(): void
     {
-        $httpClient = $this->createMock(HttpClientInterface::class);
-        $client = new DigitalOceanClient($httpClient);
+        $client = new DigitalOceanClient();
 
         $request = $this->createMock(RequestInterface::class);
         $response = $this->createMock(ResponseInterface::class);

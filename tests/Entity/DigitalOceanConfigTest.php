@@ -23,8 +23,8 @@ class DigitalOceanConfigTest extends TestCase
 
         $apiKey = 'test-api-key-12345';
         $remark = 'Test configuration';
-        $createTime = new \DateTime('2023-01-01');
-        $updateTime = new \DateTime('2023-01-02');
+        $createTime = new \DateTimeImmutable('2023-01-01');
+        $updateTime = new \DateTimeImmutable('2023-01-02');
 
         $config->setApiKey($apiKey)
             ->setRemark($remark);
@@ -49,8 +49,6 @@ class DigitalOceanConfigTest extends TestCase
             ->setRemark($remark);
 
         $plainArray = $config->toPlainArray();
-
-        $this->assertIsArray($plainArray);
         $this->assertEquals(0, $plainArray['id']);
         $this->assertEquals($apiKey, $plainArray['apiKey']);
         $this->assertEquals($remark, $plainArray['remark']);
@@ -67,8 +65,6 @@ class DigitalOceanConfigTest extends TestCase
             ->setRemark($remark);
 
         $adminArray = $config->toAdminArray();
-
-        $this->assertIsArray($adminArray);
         $this->assertEquals(0, $adminArray['id']);
         $this->assertEquals($apiKey, $adminArray['apiKey']);
         $this->assertEquals($remark, $adminArray['remark']);

@@ -43,7 +43,7 @@ class DigitalOceanClient extends ApiClient
         // 从请求对象获取API Key
         if ($request instanceof DigitalOceanRequest) {
             $apiKey = $request->getApiKey();
-            if ($apiKey) {
+            if ($apiKey !== null && $apiKey !== '') {
                 $options['headers']['Authorization'] = 'Bearer ' . $apiKey;
                 $options['headers']['Content-Type'] = 'application/json';
             } else {

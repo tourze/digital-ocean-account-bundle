@@ -4,6 +4,7 @@ namespace DigitalOceanAccountBundle\Service;
 
 use DigitalOceanAccountBundle\Client\DigitalOceanClient;
 use DigitalOceanAccountBundle\Entity\Account;
+use DigitalOceanAccountBundle\Exception\DigitalOceanException;
 use DigitalOceanAccountBundle\Repository\AccountRepository;
 use DigitalOceanAccountBundle\Request\Account\GetAccountRequest;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,7 +45,7 @@ class AccountService extends AbstractDigitalOceanService
         $accountData = $this->getAccount();
 
         if (empty($accountData)) {
-            throw new \RuntimeException('获取账号信息失败');
+            throw new DigitalOceanException('获取账号信息失败');
         }
 
         // 查找现有账号或创建新账号

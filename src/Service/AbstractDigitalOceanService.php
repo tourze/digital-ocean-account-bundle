@@ -3,6 +3,7 @@
 namespace DigitalOceanAccountBundle\Service;
 
 use DigitalOceanAccountBundle\Client\DigitalOceanClient;
+use DigitalOceanAccountBundle\Exception\DigitalOceanException;
 use DigitalOceanAccountBundle\Request\DigitalOceanRequest;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -27,7 +28,7 @@ abstract class AbstractDigitalOceanService
     {
         $config = $this->configService->getConfig();
         if ($config === null) {
-            throw new \RuntimeException('未配置 DigitalOcean API Key');
+            throw new DigitalOceanException('未配置 DigitalOcean API Key');
         }
 
         $request->setApiKey($config->getApiKey());

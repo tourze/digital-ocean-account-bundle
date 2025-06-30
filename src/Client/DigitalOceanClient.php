@@ -2,6 +2,7 @@
 
 namespace DigitalOceanAccountBundle\Client;
 
+use DigitalOceanAccountBundle\Exception\MissingApiKeyException;
 use DigitalOceanAccountBundle\Request\DigitalOceanRequest;
 use HttpClientBundle\Client\ApiClient;
 use HttpClientBundle\Request\RequestInterface;
@@ -47,7 +48,7 @@ class DigitalOceanClient extends ApiClient
                 $options['headers']['Authorization'] = 'Bearer ' . $apiKey;
                 $options['headers']['Content-Type'] = 'application/json';
             } else {
-                throw new \RuntimeException('请求缺少API Key');
+                throw new MissingApiKeyException('请求缺少API Key');
             }
         }
 

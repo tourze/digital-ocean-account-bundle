@@ -11,6 +11,8 @@ class DigitalOceanAccountExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container): void
     {
+        $container->setParameter('digital_ocean_account.resource_dir', realpath(__DIR__ . '/../Resources/config'));
+        
         $loader = new YamlFileLoader(
             $container,
             new FileLocator(__DIR__ . '/../Resources/config')

@@ -3,11 +3,16 @@
 namespace DigitalOceanAccountBundle\Tests\Entity;
 
 use DigitalOceanAccountBundle\Entity\DigitalOceanConfig;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use Tourze\PHPUnitDoctrineEntity\AbstractEntityTestCase;
 
-class DigitalOceanConfigTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(DigitalOceanConfig::class)]
+final class DigitalOceanConfigTest extends AbstractEntityTestCase
 {
-    public function testConstruction_withDefaultValues(): void
+    public function testConstructionWithDefaultValues(): void
     {
         $config = new DigitalOceanConfig();
 
@@ -17,7 +22,7 @@ class DigitalOceanConfigTest extends TestCase
         $this->assertNull($config->getRemark());
     }
 
-    public function testGettersAndSetters_withValidValues(): void
+    public function testGettersAndSettersWithValidValues(): void
     {
         $config = new DigitalOceanConfig();
 
@@ -26,8 +31,8 @@ class DigitalOceanConfigTest extends TestCase
         $createTime = new \DateTimeImmutable('2023-01-01');
         $updateTime = new \DateTimeImmutable('2023-01-02');
 
-        $config->setApiKey($apiKey)
-            ->setRemark($remark);
+        $config->setApiKey($apiKey);
+        $config->setRemark($remark);
 
         $config->setCreateTime($createTime);
         $config->setUpdateTime($updateTime);
@@ -38,15 +43,15 @@ class DigitalOceanConfigTest extends TestCase
         $this->assertEquals($updateTime, $config->getUpdateTime());
     }
 
-    public function testToPlainArray_returnsCorrectFormat(): void
+    public function testToPlainArrayReturnsCorrectFormat(): void
     {
         $config = new DigitalOceanConfig();
 
         $apiKey = 'test-api-key-12345';
         $remark = 'Test configuration';
 
-        $config->setApiKey($apiKey)
-            ->setRemark($remark);
+        $config->setApiKey($apiKey);
+        $config->setRemark($remark);
 
         $plainArray = $config->toPlainArray();
         $this->assertEquals(0, $plainArray['id']);
@@ -54,19 +59,35 @@ class DigitalOceanConfigTest extends TestCase
         $this->assertEquals($remark, $plainArray['remark']);
     }
 
-    public function testToAdminArray_returnsCorrectFormat(): void
+    public function testToAdminArrayReturnsCorrectFormat(): void
     {
         $config = new DigitalOceanConfig();
 
         $apiKey = 'test-api-key-12345';
         $remark = 'Test configuration';
 
-        $config->setApiKey($apiKey)
-            ->setRemark($remark);
+        $config->setApiKey($apiKey);
+        $config->setRemark($remark);
 
         $adminArray = $config->toAdminArray();
         $this->assertEquals(0, $adminArray['id']);
         $this->assertEquals($apiKey, $adminArray['apiKey']);
         $this->assertEquals($remark, $adminArray['remark']);
+    }
+
+    protected function createEntity(): object
+    {
+        return new DigitalOceanConfig();
+    }
+
+    /**
+     * @return iterable<array{string, mixed}>
+     */
+    public static function propertiesProvider(): iterable
+    {
+        yield 'apiKey' => ['apiKey', 'test-api-key-12345'];
+        yield 'remark' => ['remark', 'Test configuration'];
+        yield 'createTime' => ['createTime', new \DateTimeImmutable('2023-01-01')];
+        yield 'updateTime' => ['updateTime', new \DateTimeImmutable('2023-01-02')];
     }
 }

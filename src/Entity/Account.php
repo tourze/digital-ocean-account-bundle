@@ -5,18 +5,25 @@ namespace DigitalOceanAccountBundle\Entity;
 use DigitalOceanAccountBundle\Repository\AccountRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Tourze\Arrayable\AdminArrayInterface;
 use Tourze\Arrayable\PlainArrayInterface;
 use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
 
+/**
+ * @implements PlainArrayInterface<string, mixed>
+ * @implements AdminArrayInterface<string, mixed>
+ */
 #[ORM\Entity(repositoryClass: AccountRepository::class)]
 #[ORM\Table(name: 'ims_digital_ocean_account', options: ['comment' => 'DigitalOcean账号信息'])]
 class Account implements PlainArrayInterface, AdminArrayInterface, \Stringable
 {
+    use TimestampableAware;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER, options: ['comment' => 'ID'])]
-    private ?int $id = 0;
+    private ?int $id = null;
 
     public function getId(): ?int
     {
@@ -29,43 +36,53 @@ class Account implements PlainArrayInterface, AdminArrayInterface, \Stringable
     }
 
     #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '邮箱'])]
+    #[Assert\NotBlank]
+    #[Assert\Email]
+    #[Assert\Length(max: 255)]
     private string $email;
 
     #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '用户UUID'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     private string $uuid;
 
     #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '用户状态'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     private string $status;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['comment' => '是否验证'])]
+    #[Assert\NotNull]
     private bool $emailVerified;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '团队名称'])]
+    #[Assert\Length(max: 255)]
     private ?string $teamName = null;
 
     #[ORM\Column(type: Types::STRING, length: 20, nullable: true, options: ['comment' => '下拉菜单展示'])]
+    #[Assert\Length(max: 20)]
     private ?string $dropletLimit = null;
 
     #[ORM\Column(type: Types::STRING, length: 20, nullable: true, options: ['comment' => '浮动IP限制'])]
+    #[Assert\Length(max: 20)]
     private ?string $floatingIpLimit = null;
 
     #[ORM\Column(type: Types::STRING, length: 20, nullable: true, options: ['comment' => '预留IP限制'])]
+    #[Assert\Length(max: 20)]
     private ?string $reservedIpLimit = null;
 
     #[ORM\Column(type: Types::STRING, length: 20, nullable: true, options: ['comment' => '卷限制'])]
+    #[Assert\Length(max: 20)]
     private ?string $volumeLimit = null;
-
-    use TimestampableAware;
 
     public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(string $email): void
     {
         $this->email = $email;
-        return $this;
     }
 
     public function getUuid(): string
@@ -73,10 +90,9 @@ class Account implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->uuid;
     }
 
-    public function setUuid(string $uuid): self
+    public function setUuid(string $uuid): void
     {
         $this->uuid = $uuid;
-        return $this;
     }
 
     public function getStatus(): string
@@ -84,10 +100,9 @@ class Account implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->status;
     }
 
-    public function setStatus(string $status): self
+    public function setStatus(string $status): void
     {
         $this->status = $status;
-        return $this;
     }
 
     public function getEmailVerified(): bool
@@ -95,10 +110,9 @@ class Account implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->emailVerified;
     }
 
-    public function setEmailVerified(bool $emailVerified): self
+    public function setEmailVerified(bool $emailVerified): void
     {
         $this->emailVerified = $emailVerified;
-        return $this;
     }
 
     public function getTeamName(): ?string
@@ -106,10 +120,9 @@ class Account implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->teamName;
     }
 
-    public function setTeamName(?string $teamName): self
+    public function setTeamName(?string $teamName): void
     {
         $this->teamName = $teamName;
-        return $this;
     }
 
     public function getDropletLimit(): ?string
@@ -117,10 +130,9 @@ class Account implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->dropletLimit;
     }
 
-    public function setDropletLimit(?string $dropletLimit): self
+    public function setDropletLimit(?string $dropletLimit): void
     {
         $this->dropletLimit = $dropletLimit;
-        return $this;
     }
 
     public function getFloatingIpLimit(): ?string
@@ -128,10 +140,9 @@ class Account implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->floatingIpLimit;
     }
 
-    public function setFloatingIpLimit(?string $floatingIpLimit): self
+    public function setFloatingIpLimit(?string $floatingIpLimit): void
     {
         $this->floatingIpLimit = $floatingIpLimit;
-        return $this;
     }
 
     public function getReservedIpLimit(): ?string
@@ -139,10 +150,9 @@ class Account implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->reservedIpLimit;
     }
 
-    public function setReservedIpLimit(?string $reservedIpLimit): self
+    public function setReservedIpLimit(?string $reservedIpLimit): void
     {
         $this->reservedIpLimit = $reservedIpLimit;
-        return $this;
     }
 
     public function getVolumeLimit(): ?string
@@ -150,12 +160,14 @@ class Account implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->volumeLimit;
     }
 
-    public function setVolumeLimit(?string $volumeLimit): self
+    public function setVolumeLimit(?string $volumeLimit): void
     {
         $this->volumeLimit = $volumeLimit;
-        return $this;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toPlainArray(): array
     {
         return [
@@ -174,16 +186,25 @@ class Account implements PlainArrayInterface, AdminArrayInterface, \Stringable
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toAdminArray(): array
     {
         return $this->toPlainArray();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function retrievePlainArray(): array
     {
         return $this->toPlainArray();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function retrieveAdminArray(): array
     {
         return $this->toAdminArray();

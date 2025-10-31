@@ -14,10 +14,9 @@ abstract class DigitalOceanRequest extends ApiRequest
     /**
      * 设置API Key
      */
-    public function setApiKey(string $apiKey): self
+    public function setApiKey(string $apiKey): void
     {
         $this->apiKey = $apiKey;
-        return $this;
     }
 
     /**
@@ -38,6 +37,7 @@ abstract class DigitalOceanRequest extends ApiRequest
 
     /**
      * 默认空选项，认证头由Client统一处理
+     * @return array<string, mixed>|null
      */
     public function getRequestOptions(): ?array
     {

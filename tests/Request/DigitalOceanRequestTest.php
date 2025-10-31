@@ -3,9 +3,14 @@
 namespace DigitalOceanAccountBundle\Tests\Request;
 
 use DigitalOceanAccountBundle\Request\DigitalOceanRequest;
-use PHPUnit\Framework\TestCase;
+use HttpClientBundle\Tests\Request\RequestTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-class DigitalOceanRequestTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(DigitalOceanRequest::class)]
+final class DigitalOceanRequestTest extends RequestTestCase
 {
     /**
      * 创建一个匿名子类实例用于测试
@@ -20,39 +25,38 @@ class DigitalOceanRequestTest extends TestCase
         };
     }
 
-    public function testSetAndGetApiKey_returnsExpectedKey(): void
+    public function testSetAndGetApiKeyReturnsExpectedKey(): void
     {
         $request = $this->createRequestInstance();
         $apiKey = 'test-api-key-12345';
 
-        $result = $request->setApiKey($apiKey);
+        $request->setApiKey($apiKey);
 
-        $this->assertSame($request, $result);
         $this->assertEquals($apiKey, $request->getApiKey());
     }
 
-    public function testGetApiKey_whenNotSet_returnsNull(): void
+    public function testGetApiKeyWhenNotSetReturnsNull(): void
     {
         $request = $this->createRequestInstance();
 
         $this->assertNull($request->getApiKey());
     }
 
-    public function testGetRequestMethod_returnsGetByDefault(): void
+    public function testGetRequestMethodReturnsGetByDefault(): void
     {
         $request = $this->createRequestInstance();
 
         $this->assertEquals('GET', $request->getRequestMethod());
     }
 
-    public function testGetRequestOptions_returnsEmptyArrayByDefault(): void
+    public function testGetRequestOptionsReturnsEmptyArrayByDefault(): void
     {
         $request = $this->createRequestInstance();
 
         $this->assertEquals([], $request->getRequestOptions());
     }
 
-    public function testGetRequestPath_returnsExpectedPath(): void
+    public function testGetRequestPathReturnsExpectedPath(): void
     {
         $request = $this->createRequestInstance();
 

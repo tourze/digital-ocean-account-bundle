@@ -3,9 +3,14 @@
 namespace DigitalOceanAccountBundle\Tests\Exception;
 
 use DigitalOceanAccountBundle\Exception\MissingApiKeyException;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use Tourze\PHPUnitBase\AbstractExceptionTestCase;
 
-class MissingApiKeyExceptionTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(MissingApiKeyException::class)]
+final class MissingApiKeyExceptionTest extends AbstractExceptionTestCase
 {
     public function testConstruct(): void
     {
@@ -33,11 +38,5 @@ class MissingApiKeyExceptionTest extends TestCase
         $previous = new \Exception('Previous exception');
         $exception = new MissingApiKeyException('错误', 0, $previous);
         self::assertSame($previous, $exception->getPrevious());
-    }
-
-    public function testIsRuntimeException(): void
-    {
-        $exception = new MissingApiKeyException();
-        self::assertInstanceOf(\RuntimeException::class, $exception);
     }
 }

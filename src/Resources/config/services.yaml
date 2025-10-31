@@ -6,6 +6,8 @@ services:
 
   DigitalOceanAccountBundle\Client\:
     resource: '../../Client/'
+  DigitalOceanAccountBundle\Controller\:
+    resource: '../../Controller/'
   DigitalOceanAccountBundle\Repository\:
     resource: '../../Repository/'
   DigitalOceanAccountBundle\Service\:

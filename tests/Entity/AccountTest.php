@@ -3,11 +3,16 @@
 namespace DigitalOceanAccountBundle\Tests\Entity;
 
 use DigitalOceanAccountBundle\Entity\Account;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use Tourze\PHPUnitDoctrineEntity\AbstractEntityTestCase;
 
-class AccountTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(Account::class)]
+final class AccountTest extends AbstractEntityTestCase
 {
-    public function testConstruction_withDefaultValues(): void
+    public function testConstructionWithDefaultValues(): void
     {
         $account = new Account();
 
@@ -21,7 +26,7 @@ class AccountTest extends TestCase
         $this->assertNull($account->getVolumeLimit());
     }
 
-    public function testGettersAndSetters_withValidValues(): void
+    public function testGettersAndSettersWithValidValues(): void
     {
         $account = new Account();
 
@@ -37,15 +42,15 @@ class AccountTest extends TestCase
         $createTime = new \DateTimeImmutable('2023-01-01');
         $updateTime = new \DateTimeImmutable('2023-01-02');
 
-        $account->setEmail($email)
-            ->setUuid($uuid)
-            ->setStatus($status)
-            ->setEmailVerified($emailVerified)
-            ->setTeamName($teamName)
-            ->setDropletLimit($dropletLimit)
-            ->setFloatingIpLimit($floatingIpLimit)
-            ->setReservedIpLimit($reservedIpLimit)
-            ->setVolumeLimit($volumeLimit);
+        $account->setEmail($email);
+        $account->setUuid($uuid);
+        $account->setStatus($status);
+        $account->setEmailVerified($emailVerified);
+        $account->setTeamName($teamName);
+        $account->setDropletLimit($dropletLimit);
+        $account->setFloatingIpLimit($floatingIpLimit);
+        $account->setReservedIpLimit($reservedIpLimit);
+        $account->setVolumeLimit($volumeLimit);
 
         $account->setCreateTime($createTime);
         $account->setUpdateTime($updateTime);
@@ -63,7 +68,7 @@ class AccountTest extends TestCase
         $this->assertEquals($updateTime, $account->getUpdateTime());
     }
 
-    public function testToPlainArray_returnsCorrectFormat(): void
+    public function testToPlainArrayReturnsCorrectFormat(): void
     {
         $account = new Account();
 
@@ -72,10 +77,10 @@ class AccountTest extends TestCase
         $status = 'active';
         $emailVerified = true;
 
-        $account->setEmail($email)
-            ->setUuid($uuid)
-            ->setStatus($status)
-            ->setEmailVerified($emailVerified);
+        $account->setEmail($email);
+        $account->setUuid($uuid);
+        $account->setStatus($status);
+        $account->setEmailVerified($emailVerified);
 
         $plainArray = $account->toPlainArray();
         $this->assertEquals(0, $plainArray['id']);
@@ -85,7 +90,7 @@ class AccountTest extends TestCase
         $this->assertEquals($emailVerified, $plainArray['emailVerified']);
     }
 
-    public function testToAdminArray_returnsCorrectFormat(): void
+    public function testToAdminArrayReturnsCorrectFormat(): void
     {
         $account = new Account();
 
@@ -94,10 +99,10 @@ class AccountTest extends TestCase
         $status = 'active';
         $emailVerified = true;
 
-        $account->setEmail($email)
-            ->setUuid($uuid)
-            ->setStatus($status)
-            ->setEmailVerified($emailVerified);
+        $account->setEmail($email);
+        $account->setUuid($uuid);
+        $account->setStatus($status);
+        $account->setEmailVerified($emailVerified);
 
         $adminArray = $account->toAdminArray();
         $this->assertEquals(0, $adminArray['id']);
@@ -105,5 +110,28 @@ class AccountTest extends TestCase
         $this->assertEquals($uuid, $adminArray['uuid']);
         $this->assertEquals($status, $adminArray['status']);
         $this->assertEquals($emailVerified, $adminArray['emailVerified']);
+    }
+
+    protected function createEntity(): object
+    {
+        return new Account();
+    }
+
+    /**
+     * @return iterable<array{string, mixed}>
+     */
+    public static function propertiesProvider(): iterable
+    {
+        yield 'email' => ['email', 'test@example.com'];
+        yield 'uuid' => ['uuid', '12345678-1234-1234-1234-123456789012'];
+        yield 'status' => ['status', 'active'];
+        yield 'emailVerified' => ['emailVerified', true];
+        yield 'teamName' => ['teamName', 'Test Team'];
+        yield 'dropletLimit' => ['dropletLimit', '10'];
+        yield 'floatingIpLimit' => ['floatingIpLimit', '5'];
+        yield 'reservedIpLimit' => ['reservedIpLimit', '3'];
+        yield 'volumeLimit' => ['volumeLimit', '20'];
+        yield 'createTime' => ['createTime', new \DateTimeImmutable('2023-01-01')];
+        yield 'updateTime' => ['updateTime', new \DateTimeImmutable('2023-01-02')];
     }
 }

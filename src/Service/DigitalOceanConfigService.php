@@ -5,15 +5,19 @@ namespace DigitalOceanAccountBundle\Service;
 use DigitalOceanAccountBundle\Entity\DigitalOceanConfig;
 use DigitalOceanAccountBundle\Repository\DigitalOceanConfigRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Monolog\Attribute\WithMonologChannel;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Tourze\Symfony\AopDoctrineBundle\Attribute\Transactional;
 
-class DigitalOceanConfigService
+#[Autoconfigure(public: true)]
+#[WithMonologChannel(channel: 'digital_ocean_account')]
+readonly class DigitalOceanConfigService
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly DigitalOceanConfigRepository $repository,
-        private readonly LoggerInterface $logger,
+        private EntityManagerInterface $entityManager,
+        private DigitalOceanConfigRepository $repository,
+        private LoggerInterface $logger,
     ) {
     }
 
@@ -22,7 +26,10 @@ class DigitalOceanConfigService
      */
     public function getConfig(): ?DigitalOceanConfig
     {
-        return $this->repository->findOneBy([], ['id' => 'DESC']);
+        $config = $this->repository->findOneBy([], ['id' => 'DESC']);
+        assert($config instanceof DigitalOceanConfig || null === $config);
+
+        return $config;
     }
 
     /**
@@ -33,13 +40,13 @@ class DigitalOceanConfigService
     {
         $config = $this->getConfig();
 
-        if ($config === null) {
+        if (null === $config) {
             $config = new DigitalOceanConfig();
         }
 
         $config->setApiKey($apiKey);
 
-        if ($remark !== null) {
+        if (null !== $remark) {
             $config->setRemark($remark);
         }
 

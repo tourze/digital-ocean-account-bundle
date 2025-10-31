@@ -3,135 +3,223 @@
 namespace DigitalOceanAccountBundle\Tests\Client;
 
 use DigitalOceanAccountBundle\Client\DigitalOceanClient;
+use DigitalOceanAccountBundle\Exception\MissingApiKeyException;
 use DigitalOceanAccountBundle\Request\DigitalOceanRequest;
+use DigitalOceanAccountBundle\Tests\Helper\MockResponse;
 use HttpClientBundle\Request\RequestInterface;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Symfony\Contracts\HttpClient\ResponseInterface;
+use Tourze\PHPUnitSymfonyKernelTest\AbstractIntegrationTestCase;
 
-class DigitalOceanClientTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(DigitalOceanClient::class)]
+#[RunTestsInSeparateProcesses]
+final class DigitalOceanClientTest extends AbstractIntegrationTestCase
 {
-    public function testGetBaseUrl_returnsCorrectUrl(): void
-    {
-        $client = new DigitalOceanClient();
+    private DigitalOceanClient $client;
 
-        $this->assertEquals('https://api.digitalocean.com/v2', $client->getBaseUrl());
+    protected function onSetUp(): void
+    {
+        $this->client = self::getService(DigitalOceanClient::class);
     }
 
-    public function testGetRequestUrl_returnsCorrectUrl(): void
+    public function testGetBaseUrlReturnsCorrectUrl(): void
     {
-        $client = new DigitalOceanClient();
+        $this->assertEquals('https://api.digitalocean.com/v2', $this->client->getBaseUrl());
+    }
 
-        $request = $this->createMock(RequestInterface::class);
-        $request->expects($this->once())
-            ->method('getRequestPath')
-            ->willReturn('/test-path');
+    public function testGetRequestUrlReturnsCorrectUrl(): void
+    {
+        $request = new class implements RequestInterface {
+            public function getRequestPath(): string
+            {
+                return '/test-path';
+            }
+
+            public function getRequestMethod(): string
+            {
+                return 'GET';
+            }
+
+            public function getRequestOptions(): ?array
+            {
+                return null;
+            }
+        };
 
         // 使用反射调用受保护的方法
-        $reflection = new \ReflectionClass($client);
+        $reflection = new \ReflectionClass($this->client);
         $method = $reflection->getMethod('getRequestUrl');
         $method->setAccessible(true);
 
-        $url = $method->invoke($client, $request);
+        $url = $method->invoke($this->client, $request);
 
         $this->assertEquals('https://api.digitalocean.com/v2/test-path', $url);
     }
 
-    public function testGetRequestMethod_returnsMethodFromRequest(): void
+    public function testGetRequestMethodReturnsMethodFromRequest(): void
     {
-        $client = new DigitalOceanClient();
+        $request = new class implements RequestInterface {
+            public function getRequestPath(): string
+            {
+                return '/test';
+            }
 
-        $request = $this->createMock(RequestInterface::class);
-        $request->expects($this->once())
-            ->method('getRequestMethod')
-            ->willReturn('POST');
+            public function getRequestMethod(): string
+            {
+                return 'POST';
+            }
+
+            public function getRequestOptions(): ?array
+            {
+                return null;
+            }
+        };
 
         // 使用反射调用受保护的方法
-        $reflection = new \ReflectionClass($client);
+        $reflection = new \ReflectionClass($this->client);
         $method = $reflection->getMethod('getRequestMethod');
         $method->setAccessible(true);
 
-        $requestMethod = $method->invoke($client, $request);
+        $requestMethod = $method->invoke($this->client, $request);
 
         $this->assertEquals('POST', $requestMethod);
     }
 
-    public function testGetRequestOptions_withApiKey_addsAuthorizationHeader(): void
+    public function testGetRequestOptionsWithApiKeyAddsAuthorizationHeader(): void
     {
-        $client = new DigitalOceanClient();
-
         $apiKey = 'test-api-key-12345';
-        $request = $this->createMock(DigitalOceanRequest::class);
+        // 使用匿名类替代 DigitalOceanRequest Mock
+        $request = new class($apiKey) extends DigitalOceanRequest {
+            private string $apiKey;
 
-        $request->expects($this->once())
-            ->method('getRequestOptions')
-            ->willReturn([]);
+            public function __construct(string $apiKey)
+            {
+                $this->apiKey = $apiKey;
+            }
 
-        $request->expects($this->once())
-            ->method('getApiKey')
-            ->willReturn($apiKey);
+            /**
+             * @return array<string, mixed>
+             */
+            public function getRequestOptions(): array
+            {
+                return [];
+            }
+
+            public function getApiKey(): string
+            {
+                return $this->apiKey;
+            }
+
+            // 实现抽象方法
+            public function getRequestPath(): string
+            {
+                return '/test';
+            }
+
+            public function getRequestMethod(): string
+            {
+                return 'GET';
+            }
+        };
 
         // 使用反射调用受保护的方法
-        $reflection = new \ReflectionClass($client);
+        $reflection = new \ReflectionClass($this->client);
         $method = $reflection->getMethod('getRequestOptions');
         $method->setAccessible(true);
 
-        $options = $method->invoke($client, $request);
+        $options = $method->invoke($this->client, $request);
+        $this->assertIsArray($options);
         $this->assertArrayHasKey('headers', $options);
+        $this->assertIsArray($options['headers']);
         $this->assertEquals('Bearer ' . $apiKey, $options['headers']['Authorization']);
         $this->assertEquals('application/json', $options['headers']['Content-Type']);
     }
 
-    public function testGetRequestOptions_withoutApiKey_throwsException(): void
+    public function testGetRequestOptionsWithoutApiKeyThrowsException(): void
     {
-        $client = new DigitalOceanClient();
+        // 使用匿名类替代 DigitalOceanRequest Mock
+        $request = new class extends DigitalOceanRequest {
+            /**
+             * @return array<string, mixed>
+             */
+            public function getRequestOptions(): array
+            {
+                return [];
+            }
 
-        $request = $this->createMock(DigitalOceanRequest::class);
+            public function getApiKey(): ?string
+            {
+                return null;
+            }
 
-        $request->expects($this->once())
-            ->method('getRequestOptions')
-            ->willReturn([]);
+            // 实现抽象方法
+            public function getRequestPath(): string
+            {
+                return '/test';
+            }
 
-        $request->expects($this->once())
-            ->method('getApiKey')
-            ->willReturn(null);
+            public function getRequestMethod(): string
+            {
+                return 'GET';
+            }
+        };
 
         // 使用反射调用受保护的方法
-        $reflection = new \ReflectionClass($client);
+        $reflection = new \ReflectionClass($this->client);
         $method = $reflection->getMethod('getRequestOptions');
         $method->setAccessible(true);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(MissingApiKeyException::class);
         $this->expectExceptionMessage('请求缺少API Key');
 
-        $method->invoke($client, $request);
+        $method->invoke($this->client, $request);
     }
 
-    public function testFormatResponse_parsesJsonCorrectly(): void
+    public function testFormatResponseParsesJsonCorrectly(): void
     {
-        $client = new DigitalOceanClient();
+        $request = new class implements RequestInterface {
+            public function getRequestPath(): string
+            {
+                return '/test';
+            }
 
-        $request = $this->createMock(RequestInterface::class);
-        $response = $this->createMock(ResponseInterface::class);
+            public function getRequestMethod(): string
+            {
+                return 'GET';
+            }
+
+            public function getRequestOptions(): ?array
+            {
+                return null;
+            }
+        };
 
         $jsonResponse = '{"key": "value", "nested": {"subkey": "subvalue"}}';
+        $response = $this->createMockResponse($jsonResponse);
+
         $expectedArray = [
             'key' => 'value',
             'nested' => [
-                'subkey' => 'subvalue'
-            ]
+                'subkey' => 'subvalue',
+            ],
         ];
 
-        $response->expects($this->once())
-            ->method('getContent')
-            ->willReturn($jsonResponse);
-
         // 使用反射调用受保护的方法
-        $reflection = new \ReflectionClass($client);
+        $reflection = new \ReflectionClass($this->client);
         $method = $reflection->getMethod('formatResponse');
         $method->setAccessible(true);
 
-        $result = $method->invoke($client, $request, $response);
+        $result = $method->invoke($this->client, $request, $response);
 
         $this->assertEquals($expectedArray, $result);
+    }
+
+    private function createMockResponse(string $content): ResponseInterface
+    {
+        return new MockResponse($content);
     }
 }

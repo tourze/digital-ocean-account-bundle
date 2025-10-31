@@ -3,9 +3,14 @@
 namespace DigitalOceanAccountBundle\Tests\Exception;
 
 use DigitalOceanAccountBundle\Exception\DigitalOceanException;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use Tourze\PHPUnitBase\AbstractExceptionTestCase;
 
-class DigitalOceanExceptionTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(DigitalOceanException::class)]
+final class DigitalOceanExceptionTest extends AbstractExceptionTestCase
 {
     public function testConstruct(): void
     {
@@ -33,11 +38,5 @@ class DigitalOceanExceptionTest extends TestCase
         $previous = new \Exception('Previous exception');
         $exception = new DigitalOceanException('错误', 0, $previous);
         self::assertSame($previous, $exception->getPrevious());
-    }
-
-    public function testIsRuntimeException(): void
-    {
-        $exception = new DigitalOceanException();
-        self::assertInstanceOf(\RuntimeException::class, $exception);
     }
 }

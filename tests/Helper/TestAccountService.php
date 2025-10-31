@@ -1,31 +1,29 @@
 <?php
 
-namespace DigitalOceanAccountBundle\Service;
+declare(strict_types=1);
 
-use DigitalOceanAccountBundle\Abstract\AbstractDigitalOceanService;
-use DigitalOceanAccountBundle\Client\DigitalOceanClient;
+namespace DigitalOceanAccountBundle\Tests\Helper;
+
 use DigitalOceanAccountBundle\Entity\Account;
 use DigitalOceanAccountBundle\Exception\DigitalOceanException;
-use DigitalOceanAccountBundle\Repository\AccountRepository;
 use DigitalOceanAccountBundle\Request\Account\GetAccountRequest;
 use Doctrine\ORM\EntityManagerInterface;
-use Monolog\Attribute\WithMonologChannel;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
-use Tourze\Symfony\AopDoctrineBundle\Attribute\Transactional;
 
-#[Autoconfigure(public: true)]
-#[WithMonologChannel(channel: 'digital_ocean_account')]
-class AccountService extends AbstractDigitalOceanService
+/**
+ * 测试用的Account服务类
+ *
+ * @internal
+ */
+final class TestAccountService
 {
     public function __construct(
-        DigitalOceanClient $client,
-        DigitalOceanConfigService $configService,
-        EntityManagerInterface $entityManager,
-        private readonly AccountRepository $accountRepository,
-        LoggerInterface $logger,
+        private readonly TestDigitalOceanClient $client,
+        private readonly TestDigitalOceanConfigService $configService,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TestAccountRepository $accountRepository,
+        private readonly LoggerInterface $logger,
     ) {
-        parent::__construct($client, $configService, $entityManager, $logger);
     }
 
     /**
@@ -39,22 +37,16 @@ class AccountService extends AbstractDigitalOceanService
 
         $response = $this->client->request($request);
 
-        // 确保响应是数组格式
-        if (!is_array($response)) {
-            return [];
-        }
-
         // 确保account字段存在且为数组
         $account = $response['account'] ?? [];
-
-        /** @var array<string, mixed> $account */
-        return is_array($account) ? $account : [];
+        /** @var array<string, mixed> $result */
+        $result = is_array($account) ? $account : [];
+        return $result;
     }
 
     /**
      * 同步账号信息到数据库
      */
-    #[Transactional]
     public function syncAccount(): Account
     {
         $accountData = $this->getAccount();
@@ -73,6 +65,21 @@ class AccountService extends AbstractDigitalOceanService
         $this->logger->info('DigitalOcean账号信息已同步', ['id' => $account->getId()]);
 
         return $account;
+    }
+
+    /**
+     * 为请求设置API Key
+     */
+    private function prepareRequest(GetAccountRequest $request): GetAccountRequest
+    {
+        $config = $this->configService->getConfig();
+        if (null === $config) {
+            throw new DigitalOceanException('未配置 DigitalOcean API Key');
+        }
+
+        $request->setApiKey($config->getApiKey());
+
+        return $request;
     }
 
     /**

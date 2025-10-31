@@ -3,11 +3,16 @@
 namespace DigitalOceanAccountBundle\Tests\Request\Account;
 
 use DigitalOceanAccountBundle\Request\Account\GetAccountRequest;
-use PHPUnit\Framework\TestCase;
+use HttpClientBundle\Tests\Request\RequestTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-class GetAccountRequestTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(GetAccountRequest::class)]
+final class GetAccountRequestTest extends RequestTestCase
 {
-    public function testGetRequestPath_returnsAccountPath(): void
+    public function testGetRequestPathReturnsAccountPath(): void
     {
         $request = new GetAccountRequest();
 

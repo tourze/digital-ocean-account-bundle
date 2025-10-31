@@ -2,6 +2,8 @@
 
 namespace DigitalOceanAccountBundle;
 
+use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
+use HttpClientBundle\HttpClientBundle;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Tourze\BundleDependency\BundleDependencyInterface;
 
@@ -10,7 +12,8 @@ class DigitalOceanAccountBundle extends Bundle implements BundleDependencyInterf
     public static function getBundleDependencies(): array
     {
         return [
-            \HttpClientBundle\HttpClientBundle::class => ['all' => true],
+            HttpClientBundle::class => ['all' => true],
+            DoctrineBundle::class => ['all' => true],
         ];
     }
 }

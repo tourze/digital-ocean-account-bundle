@@ -1,16 +1,19 @@
 <?php
 
-namespace DigitalOceanAccountBundle\Service;
+namespace DigitalOceanAccountBundle\Abstract;
 
 use DigitalOceanAccountBundle\Client\DigitalOceanClient;
 use DigitalOceanAccountBundle\Exception\DigitalOceanException;
 use DigitalOceanAccountBundle\Request\DigitalOceanRequest;
+use DigitalOceanAccountBundle\Service\DigitalOceanConfigService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
 /**
  * DigitalOcean服务基类
  */
+#[Autoconfigure(autowire: false)]
 abstract class AbstractDigitalOceanService
 {
     public function __construct(
@@ -27,7 +30,7 @@ abstract class AbstractDigitalOceanService
     protected function prepareRequest(DigitalOceanRequest $request): DigitalOceanRequest
     {
         $config = $this->configService->getConfig();
-        if ($config === null) {
+        if (null === $config) {
             throw new DigitalOceanException('未配置 DigitalOcean API Key');
         }
 

@@ -31,10 +31,10 @@
     "tourze/doctrine-async-insert-bundle": "1.0.*",
     "tourze/doctrine-timestamp-bundle": "1.0.*",
     "tourze/easy-admin-menu-bundle": "1.0.*",
-    "tourze/http-client-bundle": "0.1.*",
+    "tourze/http-client-bundle": "1.0.*",
     "tourze/symfony-aop-bundle": "1.0.*",
     "tourze/symfony-aop-doctrine-bundle": "1.0.*",
-    "tourze/symfony-dependency-service-loader": "1.*"
+    "tourze/symfony-dependency-service-loader": "1.0.*"
   },
   "require-dev": {
     "doctrine/doctrine-fixtures-bundle": "^4.0",

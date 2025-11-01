@@ -3,7 +3,7 @@
 namespace DigitalOceanAccountBundle\Tests\Request;
 
 use DigitalOceanAccountBundle\Request\DigitalOceanRequest;
-use HttpClientBundle\Tests\Request\RequestTestCase;
+use HttpClientBundle\Test\RequestTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
